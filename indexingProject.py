@@ -4,11 +4,11 @@ from whoosh.index import create_in
 from whoosh.fields import *
 import os, os.path
 
-dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\FILES'
+dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\FILES'
 # Defines the way the file is written
 schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=ID(stored=True), content=TEXT(analyzer=analysis.StemmingAnalyzer()))
 
-ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\index", schema)
+ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
 writer = ix.writer()
 
 # list to store files

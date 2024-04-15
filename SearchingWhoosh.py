@@ -3,7 +3,7 @@ from whoosh.fields import *
 from whoosh.qparser import QueryParser
 import os, os.path
 
-ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\index")
+ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
 
 searcher = ix.searcher()
 #print(list(searcher.lexicon("content")))
