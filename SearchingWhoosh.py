@@ -17,10 +17,29 @@ def print_menu():
     choice = int(input(""))
     return choice
 
+def print_menu_model():
+    print("========================================================")
+    print("Choose the ranking model...")
+    print("1. Default BM25F")
+    print("2. TF_IDF")
+    print("3. Frequency")
+    print("========================================================")
+    choice = int(input(""))
+    if choice == 1:
+        model = scoring.BM25F()
+        return model
+    elif choice == 2:
+        model = scoring.TF_IDF()
+        return model
+    elif choice == 3:
+        model = scoring.Frequency()
+        return model
+
 if __name__ == "__main__":
     while(True):
         choice = print_menu()
-        with ix.searcher(weighting = scoring.TF_IDF()) as searcher:
+        model = print_menu_model()
+        with ix.searcher(weighting = model) as searcher:
             if choice == 0:
                 break
             elif choice == 1:
