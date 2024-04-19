@@ -6,6 +6,14 @@ import os, os.path
 
 ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
 
+def showResult(res):
+     for hit in res:
+        print(hit)
+        print("Score: ", hit.score)
+        print("Rank: ", hit.rank)
+        print("Document number: ", hit.docnum)
+        print("\n")
+
 def print_menu():
     print("========================================================")
     print("Choose what are you searching for...")
@@ -61,12 +69,12 @@ if __name__ == "__main__":
             results = searcher.search(query, limit = 10, terms = True)
             if len(results) == 0:
                 print("Empty result!!")
+                corrected = searcher.correct_query(query, searchstring)
+                if corrected.query != query:
+                    print(f"Did you mean: {corrected.string} (y/n)")
+                    ans = input().lower()
+                    if ans == "y": 
+                        results = searcher.search(corrected.query, limit = 10, terms = True)
+                        showResult(results)
             else:
-                print(results)
-                for hit in results:
-                    print("\n")
-                    print(hit)
-                    print("Score: ", hit.score)
-                    print("Rank: ", hit.rank)
-                    print("Document number: ", hit.docnum)
-                    print("\n")
+                showResult(results)
