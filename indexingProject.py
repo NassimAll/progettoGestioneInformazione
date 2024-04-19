@@ -4,9 +4,9 @@ from whoosh.index import create_in
 from whoosh.fields import *
 import os, os.path
 
-dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\FILES'
+dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\FILES'
 # Defines the way the file is written
-schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=ID(stored=True), content=TEXT(analyzer=analysis.StemmingAnalyzer()))
+schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()))
 
 ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
 writer = ix.writer()
@@ -32,8 +32,8 @@ for file in res:
     fpath = str(dir_path + '\\' + file)
     with open(fpath, 'r', encoding='utf-8') as fd:
         title = fd.readline()
-        aut = fd.readline()
-        content = fd.read()
-        writer.add_document(title=title, path=fpath, author=aut, content=content)
+        aut = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
+        review = fd.read()
+        writer.add_document(title=title, path=fpath, author=aut, review=review)
 
 writer.commit()
