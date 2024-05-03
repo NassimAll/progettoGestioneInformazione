@@ -30,19 +30,20 @@ i = 0
 limit = 50000
 
 # Iterate directory
-for path in os.listdir(dir_path):
-    # check if current path is a file
-    if os.path.isfile(os.path.join(dir_path, path)):
-        res.append(path)
-        i += 1
-    # upper limit for number of files
-    if i >= limit:
-        break
+# for path in os.listdir(dir_path):
+#     # check if current path is a file
+#     if os.path.isfile(os.path.join(dir_path, path)):
+#         res.append(path)
+#         i += 1
+#     # upper limit for number of files
+#     if i >= limit:
+#         break
 
-for file in res: 
+for file in os.listdir(dir_path): 
     with open(os.path.join(dir_path, file), 'r', encoding='utf-8') as fd:
     #fpath = str(dir_path + '\\' + file)
         #with open(fpath, 'r', encoding='utf-8') as fd:
+        i += 1
         title = fd.readline()
         aut = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
         genre = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
@@ -68,5 +69,6 @@ for file in res:
         #print(f'Sentiment: {max_type}, {max_score}')
 
         writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, genre=genre, review=review, sentimentType=max_type, sentimentValue=max_score)
+        if i >= limit:  break
 
 writer.commit()
