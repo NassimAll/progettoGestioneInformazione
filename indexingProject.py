@@ -13,11 +13,11 @@ dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\FILES'
 MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-max_length = 1024
+max_length = 512
 
 
 # Defines the way the file is written
-schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), sentimentType=KEYWORD(stored=True), sentimentValue=NUMERIC)
+schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), genre=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), sentimentType=KEYWORD(stored=True), sentimentValue=NUMERIC(float, stored=True))
 
 ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
 writer = ix.writer()
@@ -45,6 +45,7 @@ for file in res:
         #with open(fpath, 'r', encoding='utf-8') as fd:
         title = fd.readline()
         aut = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
+        genre = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
         review = fd.read()
 
         encoded_input = tokenizer(review, max_length=max_length, return_tensors='pt', truncation=True)
@@ -66,6 +67,6 @@ for file in res:
 
         #print(f'Sentiment: {max_type}, {max_score}')
 
-        writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, review=review, sentimentType=max_type, sentimentValue=max_score)
+        writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, genre=genre, review=review, sentimentType=max_type, sentimentValue=max_score)
 
 writer.commit()
