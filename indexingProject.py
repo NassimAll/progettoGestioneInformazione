@@ -17,7 +17,7 @@ max_length = 512
 
 
 # Defines the way the file is written
-schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), genre=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), sentimentType=KEYWORD(stored=True), sentimentValue=NUMERIC(float, stored=True))
+schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), genre=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), sentimentType=TEXT(stored=True), sentimentValue=NUMERIC(float, stored=True))
 
 ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
 writer = ix.writer()
@@ -62,6 +62,7 @@ for file in os.listdir(dir_path):
         }
 
         #print(tmp_dict)
+        print(i)
 
         max_score = max(tmp_dict.values())
         max_type = list(tmp_dict.keys())[list(tmp_dict.values()).index(max_score)]
