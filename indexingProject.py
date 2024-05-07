@@ -1,5 +1,3 @@
-import nltk
-from nltk.corpus import stopwords
 from whoosh.index import create_in
 from whoosh.fields import *
 import os, os.path
@@ -17,7 +15,7 @@ max_length = 512
 
 
 # Defines the way the file is written
-schema = Schema(title=TEXT(stored=True), path=ID(stored=True), author=TEXT(stored=True, analyzer=None), genre=TEXT(stored=True, analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), sentimentType=KEYWORD(stored=True), sentimentValue=NUMERIC(float, stored=True))
+schema = Schema(title=TEXT(stored=True, analyzer=None), path=ID(stored=True, analyzer=None), author=TEXT(analyzer=None), genre=TEXT(analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), positive=NUMERIC(float, stored=True), neutral=NUMERIC(float, stored=True), negative=NUMERIC(float, stored=True))
 
 ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
 writer = ix.writer()
@@ -29,20 +27,8 @@ res = []
 i = 0
 limit = 50000
 
-# Iterate directory
-# for path in os.listdir(dir_path):
-#     # check if current path is a file
-#     if os.path.isfile(os.path.join(dir_path, path)):
-#         res.append(path)
-#         i += 1
-#     # upper limit for number of files
-#     if i >= limit:
-#         break
-
 for file in os.listdir(dir_path): 
     with open(os.path.join(dir_path, file), 'r', encoding='utf-8') as fd:
-    #fpath = str(dir_path + '\\' + file)
-        #with open(fpath, 'r', encoding='utf-8') as fd:
         i += 1
         title = fd.readline()
         aut = fd.readline().replace("[", "").replace("]", "").replace("'", "").replace("\n", "").replace("nan", "")
@@ -55,20 +41,23 @@ for file in os.listdir(dir_path):
         scores = output[0][0].detach().numpy()
         scores = softmax(scores)
 
-        tmp_dict = {
+        vals_dict = {
             'negative': scores[0],
             'neutral': scores[1],
             'positive': scores[2]
         }
 
-        #print(tmp_dict)
+        #print(vals_dict)
+        print(i)
 
-        max_score = max(tmp_dict.values())
-        max_type = list(tmp_dict.keys())[list(tmp_dict.values()).index(max_score)]
+        writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, genre=genre, review=review, positive=scores[2], neutral=scores[1], negative=scores[0])
+        if i >= limit:  break
+
+        #max_score = max(tmp_dict.values())
+        #max_type = list(tmp_dict.keys())[list(tmp_dict.values()).index(max_score)]
 
         #print(f'Sentiment: {max_type}, {max_score}')
 
-        writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, genre=genre, review=review, sentimentType=max_type, sentimentValue=max_score)
-        if i >= limit:  break
+        
 
 writer.commit()
