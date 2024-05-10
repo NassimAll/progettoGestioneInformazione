@@ -12,16 +12,22 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 max_length = 512
 ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
+searchSentiment = ""
 
-def sentiment_score(doc, score):
-    return score * doc['sentimentValue']
+
+def sentiment_score(doc, score, sent):
+    return score * doc[sent]
 
 
 class SentimentBM25F(scoring.BM25F):
     use_final = True
+    sent = ""
+
+    def setSentiment(self, sent):
+        self.sent = sent
 
     def final(self, searcher, docnum, score):
-        return sentiment_score(searcher.stored_fields(docnum), score)
+        return sentiment_score(searcher.stored_fields(docnum), score, self.sent)
 
 
 def extractQuerySentiment(querystring):
@@ -55,9 +61,13 @@ def sentimentChoice():
         
         print("You insert the wrong number, retry")
 
-def showResult(res):
+def showResult(res, sent):
      for hit in res:
-        print(hit)
+        print(hit["path"])
+        if sent != "":
+            print("Sentiment value: ", hit["neutral"])
+            print("Sentiment value: ", hit["positive"])
+            print("Sentiment value: ", hit["negative"])
         print("Score: ", hit.score)
         print("Rank: ", hit.rank)
         print("Document number: ", hit.docnum)
@@ -113,11 +123,11 @@ if __name__ == "__main__":
                 query = parser.parse(searchstring)
             elif choice == 3:
                 if model == SentimentBM25F:
-                    parser = MultifieldParser(["review", "sentimentType"], schema=ix.schema)
+                    parser = QueryParser(fieldname="review", schema=ix.schema)
                     query_str = input("Insert a string \n")
-                    sent = sentimentChoice()
-                    searchstring = "\"" + query_str + "\"" + " \"" + sent + "\""
-                    query = parser.parse(searchstring)
+                    searchSentiment = sentimentChoice()
+                    SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
+                    query = parser.parse(query_str)
                 else: 
                     parser = QueryParser(fieldname="review", schema=ix.schema)
                     searchstring = input("Insert a string \n")
@@ -134,6 +144,6 @@ if __name__ == "__main__":
                     ans = input().lower()
                     if ans == "y": 
                         results = searcher.search(corrected.query, limit = 10, terms = True)
-                        showResult(results)
+                        showResult(results, searchSentiment)
             else:
-                showResult(results)
+                showResult(results, searchSentiment)
