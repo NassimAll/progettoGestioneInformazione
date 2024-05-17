@@ -1,3 +1,5 @@
+from nltk import word_tokenize
+from nltk.corpus import stopwords
 from whoosh.index import open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser, MultifieldParser
@@ -14,6 +16,17 @@ max_length = 512
 ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
 searchSentiment = ""
 
+def preprocessText(text):
+    # Tokenization
+    tokens = word_tokenize(text)
+
+    # Rimozione della punteggiatura
+    tokens = [word for word in tokens if word.isalnum()]
+
+    # Rimozione delle stop words
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word.lower() not in stop_words]
+    return " ".join(tokens)
 
 def sentiment_score(doc, score, sent):
     return score * doc[sent]
@@ -131,6 +144,8 @@ if __name__ == "__main__":
                 else: 
                     parser = QueryParser(fieldname="review", schema=ix.schema)
                     searchstring = input("Insert a string \n")
+                    searchstring = preprocessText(searchstring)
+                    print(searchstring)
                     query = parser.parse(searchstring)
 
             print("Searching...\n")
