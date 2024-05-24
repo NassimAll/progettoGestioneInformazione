@@ -59,7 +59,7 @@ def extractQuerySentiment(querystring):
     max_score = max(tmp_dict.values())
     max_type = list(tmp_dict.keys())[list(tmp_dict.values()).index(max_score)]
 
-    return max_type
+    return (max_type, max_score)
 
 def sentimentChoice():
     while True:
@@ -103,26 +103,28 @@ def print_menu_model():
     print("1. Default BM25F")
     print("2. TF_IDF")
     print("3. Frequency")
-    print("4. BM25F + Sentiment analysis")
+    print("4. BM25F + Sentiment analysis ")
+    print("5. BM25F + Auto Sentiment analysis ")
     print("========================================================")
     choice = int(input(""))
     if choice == 1:
         model = scoring.BM25F()
-        return model
+        return (choice, model)
     elif choice == 2:
         model = scoring.TF_IDF()
-        return model
+        return (choice, model)
     elif choice == 3:
         model = scoring.Frequency()
-        return model
-    elif choice == 4:
+        return (choice, model)
+    elif choice == 4 or choice == 5:
         model = SentimentBM25F
-        return model
+        return (choice, model)
+    
 
 if __name__ == "__main__":
     while(True):
         choice = print_menu()
-        model = print_menu_model()
+        (Modelchoice, model) = print_menu_model()
         with ix.searcher(weighting = model) as searcher:
             if choice == 0:
                 break
@@ -136,11 +138,24 @@ if __name__ == "__main__":
                 query = parser.parse(searchstring)
             elif choice == 3:
                 if model == SentimentBM25F:
-                    parser = QueryParser(fieldname="review", schema=ix.schema)
-                    query_str = input("Insert a string \n")
-                    searchSentiment = sentimentChoice()
-                    SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
-                    query = parser.parse(query_str)
+                    if Modelchoice == 3:
+                        parser = QueryParser(fieldname="review", schema=ix.schema)
+                        query_str = input("Insert a string \n")
+                        searchstring = preprocessText(searchstring)
+                        print(searchstring)
+                        searchSentiment = sentimentChoice()
+                        SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
+                        query = parser.parse(query_str)
+                    elif Modelchoice == 4:
+                        parser = QueryParser(fieldname="review", schema=ix.schema)
+                        query_str = input("Insert a string \n")
+                        searchstring = preprocessText(searchstring)
+                        print(searchstring)
+                        (sent, sentValue) = extractQuerySentiment(searchstring)
+                        print(searchstring)
+                        print(f"sentiment: {sent} value: {sentValue}")
+                        SentimentBM25F.setSentiment(SentimentBM25F, sent)
+                        query = parser.parse(query_str)
                 else: 
                     parser = QueryParser(fieldname="review", schema=ix.schema)
                     searchstring = input("Insert a string \n")
