@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
             print("Searching...\n")
             
-            results = searcher.search(query, limit = 10, terms = True)
+            results = searcher.search(query, limit = 50, terms = True)
             if len(results) == 0:
                 print("Empty result!!")
                 corrected = searcher.correct_query(query, searchstring)
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                     print(f"Did you mean: {corrected.string} (y/n)")
                     ans = input().lower()
                     if ans == "y": 
-                        results = searcher.search(corrected.query, limit = 10, terms = True)
+                        results = searcher.search(corrected.query, limit = 50, terms = True)
                         showResult(results, searchSentiment)
             else:
                 showResult(results, searchSentiment)
