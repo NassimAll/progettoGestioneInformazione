@@ -9,6 +9,7 @@ from transformers import AutoModelForSequenceClassification, AutoConfig
 from transformers import TFAutoModelForSequenceClassification
 from transformers import AutoTokenizer
 from scipy.special import softmax
+
 MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
@@ -16,6 +17,9 @@ max_length = 512
 ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
 searchSentiment = ""
 
+'''
+    Preprocess della query per trasfomarla da natural language --> query language
+'''
 def preprocessText(text):
     # Tokenization
     tokens = word_tokenize(text)
@@ -28,9 +32,13 @@ def preprocessText(text):
     tokens = [word for word in tokens if word.lower() not in stop_words]
     return " ".join(tokens)
 
+'''
+    sentiment_score --> funzione che ricalcola lo score di un documento 
+    class Sentiment BM25F --> Ridefiniamo il modello del BM25 modificando il ranking in modo che 
+    tenga conto del valore di sentimento del documento 
+'''
 def sentiment_score(doc, score, sent):
     return score * doc[sent]
-
 
 class SentimentBM25F(scoring.BM25F):
     use_final = True
@@ -42,7 +50,10 @@ class SentimentBM25F(scoring.BM25F):
     def final(self, searcher, docnum, score):
         return sentiment_score(searcher.stored_fields(docnum), score, self.sent)
 
-
+'''
+    Funzione che viene utilizzata per automatizzare il search engine che lavora con la sentiment analysis
+    in modo da ricavare il sentimento dalla query senza richiedere all'utente alcuna interazione
+'''
 def extractQuerySentiment(querystring):
     encoded_input = tokenizer(querystring, max_length=max_length, return_tensors='pt', truncation=True)
 
