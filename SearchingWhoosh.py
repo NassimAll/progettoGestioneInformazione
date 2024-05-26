@@ -72,6 +72,9 @@ def extractQuerySentiment(querystring):
 
     return (max_type, max_score)
 
+'''
+Stampa menu di scelta sentiment
+'''
 def sentimentChoice():
     while True:
         print("What sentiment are you looking for? ")
@@ -85,6 +88,7 @@ def sentimentChoice():
         
         print("You insert the wrong number, retry")
 
+#Stampa dei risultati 
 def showResult(res, sent):
      for hit in res:
         print(hit["path"])
@@ -97,17 +101,20 @@ def showResult(res, sent):
         print("Document number: ", hit.docnum)
         print("\n")
 
+#Stampa menu di ricerca
 def print_menu():
     print("========================================================")
     print("Choose what are you searching for...")
     print("0. Exit")
     print("1. Book title")
     print("2. Book author")
-    print("3. Comments in the review")
+    print("3. Genre")
+    print("4. Comments in the review")
     print("========================================================")
     choice = int(input(""))
     return choice
 
+#stampa scelta dei modelli 
 def print_menu_model():
     print("========================================================")
     print("Choose the ranking model...")
@@ -139,17 +146,39 @@ if __name__ == "__main__":
         with ix.searcher(weighting = model) as searcher:
             if choice == 0:
                 break
-            elif choice == 1:
+            elif choice == 1:   #Search the title
+                if Modelchoice == 4:    #Check if want to search a sentiment
+                        parser = QueryParser(fieldname="title", schema=ix.schema)
+                        searchstring = input("Insert the title of the book \n")
+                        searchSentiment = sentimentChoice()
+                        SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
+                        query = parser.parse(searchstring)
                 parser = QueryParser(fieldname="title", schema=ix.schema)
                 searchstring = input("Insert the title of the book \n")
                 query = parser.parse(searchstring)
-            elif choice == 2:
+            elif choice == 2:   #Search the author
+                if Modelchoice == 4:    #Check if want to search a sentiment
+                        parser = QueryParser(fieldname="author", schema=ix.schema)
+                        searchstring = input("Insert the author of the book \n")
+                        searchSentiment = sentimentChoice()
+                        SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
+                        query = parser.parse(searchstring)
                 parser = QueryParser(fieldname="author", schema=ix.schema)
                 searchstring = input("Insert the author of the book \n")
                 query = parser.parse(searchstring)
-            elif choice == 3:
+            elif choice == 3:   #Search the genre
+                if Modelchoice == 4:    #Check if want to search a sentiment
+                        parser = QueryParser(fieldname="genre", schema=ix.schema)
+                        searchstring = input("Insert the genre of the book \n")
+                        searchSentiment = sentimentChoice()
+                        SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
+                        query = parser.parse(searchstring)
+                parser = QueryParser(fieldname="genre", schema=ix.schema)
+                searchstring = input("Insert the genre of the book \n")
+                query = parser.parse(searchstring)
+            elif choice == 4:   #Search for a specific in the review
                 if model == SentimentBM25F:
-                    if Modelchoice == 3:
+                    if Modelchoice == 4:    #Manual sentiment choice
                         parser = QueryParser(fieldname="review", schema=ix.schema)
                         query_str = input("Insert a string \n")
                         searchstring = preprocessText(searchstring)
@@ -157,7 +186,7 @@ if __name__ == "__main__":
                         searchSentiment = sentimentChoice()
                         SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
                         query = parser.parse(query_str)
-                    elif Modelchoice == 4:
+                    elif Modelchoice == 5:  #Automatic sentiment analysis of the query
                         parser = QueryParser(fieldname="review", schema=ix.schema)
                         query_str = input("Insert a string \n")
                         searchstring = preprocessText(searchstring)
@@ -180,7 +209,7 @@ if __name__ == "__main__":
             if len(results) == 0:
                 print("Empty result!!")
                 corrected = searcher.correct_query(query, searchstring)
-                if corrected.query != query:
+                if corrected.query != query:    #Check if the query can be corrected
                     print(f"Did you mean: {corrected.string} (y/n)")
                     ans = input().lower()
                     if ans == "y": 
