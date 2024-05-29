@@ -183,7 +183,7 @@ if __name__ == "__main__":
                     if Modelchoice == 4:    #Manual sentiment choice
                         parser = QueryParser(fieldname="review", schema=ix.schema)
                         query_str = input("Insert a string \n")
-                        searchstring = preprocessText(searchstring)
+                        searchstring = preprocessText(query_str)
                         print(searchstring)
                         searchSentiment = sentimentChoice()
                         SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
