@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from whoosh.index import open_dir
 from whoosh.fields import *
 from whoosh.qparser import QueryParser, MultifieldParser
+from whoosh import qparser
 from whoosh import scoring
 import os, os.path
 from transformers import AutoModelForSequenceClassification, AutoConfig
@@ -15,6 +16,7 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 max_length = 512
 ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
+#ix = open_dir("/Users/nax/Desktop/index")
 searchSentiment = ""
 
 '''
@@ -173,7 +175,7 @@ if __name__ == "__main__":
                         searchSentiment = sentimentChoice()
                         SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
                         query = parser.parse(searchstring)
-                parser = QueryParser(fieldname="genre", schema=ix.schema)
+                parser = QueryParser(fieldname="genre", schema=ix.schema, group=qparser.OrGroup)
                 searchstring = input("Insert the genre of the book \n")
                 query = parser.parse(searchstring)
             elif choice == 4:   #Search for a specific in the review
