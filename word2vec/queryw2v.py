@@ -1,5 +1,6 @@
 import scipy
-
+from nltk import word_tokenize
+from nltk.corpus import stopwords
 from whoosh.index import create_in, open_dir
 from whoosh.fields import *
 from whoosh.analysis import StandardAnalyzer
@@ -10,21 +11,28 @@ import gensim
 from whoosh.scoring import BM25F
 from whoosh.qparser import QueryParser, MultifieldParser
 
-directory = r'/Volumes/SSDEsterno_Nasso/PROGETTO_GESTIONE/FILES'
+directory = r"/Users/nax/Desktop/InvertedIndex"
+ix = open_dir(directory)
+
+def preprocessText(text):
+    # Tokenization
+    tokens = word_tokenize(text)
+
+    # Rimozione della punteggiatura
+    tokens = [word for word in tokens if word.isalnum()]
+
+    # Rimozione delle stop words
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word.lower() not in stop_words]
+    return " ".join(tokens)
 
 def word2vec_score(doc, score, query, model):
     # Calculate cosine similarity of the query and the document
     query_vector = preprocessed_query(query, model)
-    #print(query_vector)
-    print(doc)
     doc_vector = generateVector(doc['content'], model)
-    #print(doc_vector)
     similarity = np.dot(query_vector, doc_vector) / (np.linalg.norm(query_vector) * np.linalg.norm(doc_vector))
-    #similarity = cosine_similarity(query_vector, doc_vector)[0][0]
-    #similarity = model.wv.similar_by_vector(query_vector)
-    # print(similarity)
-    # print(score)
     return score * similarity
+
 class Word2VecModel(BM25F):
     use_final = True
     query_str = ""
@@ -62,14 +70,13 @@ def preprocessed_query(query, model):
     return query_vector
 
 def query():
-    ix = open_dir(r"/Users/nax/Desktop/InvertedIndex")
     query_text = str(input("Insert the query: "))
     weighting_model = Word2VecModel
     weighting_model.set_query(Word2VecModel,query_text)
     with ix.searcher(weighting=weighting_model) as searcher:
         parser = QueryParser(fieldname="content", schema=ix.schema)
-        searchquery = parser.parse(query_text)
-        results = searcher.search(searchquery, limit=None, terms=True)
+        searchquery = parser.parse(preprocessText(query_text))
+        results = searcher.search(searchquery, limit=10, terms=True)
         if len(results) == 0:
             print("No results found")
             return
@@ -79,4 +86,14 @@ def query():
             print("---------------\n")
 
 if __name__ == "__main__":
-    query()
+    while True:
+        print("========================================================")
+        print("Choose what to do...")
+        print("0. Exit")
+        print("1. Search")
+        print("========================================================")
+        choice = int(input(""))
+        if choice == 0:
+            break
+        elif choice == 1:
+            query()
