@@ -9,6 +9,7 @@ Abbiamo realizzato 4 versioni di serch-engine che offrono funzioni diverse e uti
 - Word2vec search engine, integra un modello di ranking che sfrutta un modello di word2vec ricavato con CBOW. 
 
 Per il funzionamento è necessario modificare sia in SearchingWhoosh.py la variabile "index_directory" con il percorso in cui avete l'inverted index, analogamente in word2vec/queryw2v.py modificare la variabile "directory" con il percorso in cui avete l'inverted index relativo al word2vec. 
+Bisogna scaricare anche il modello di word2vec che è necessario per il funzionamento dedicato alle query di word2ve, una volta scaricato il file "Books_word2vec.model" va inserito nella cartella apposita "word2vec". 
 
 DATA: 
 
