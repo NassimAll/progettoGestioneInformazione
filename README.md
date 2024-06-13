@@ -8,7 +8,16 @@ Abbiamo realizzato 4 versioni di serch-engine che offrono funzioni diverse e uti
 - Automatic sentiment search engine, integra un modello di ranking che sfrutta il valore di sentiment dei file; si chiama "Auto sentiment" perché in questo modello il sentimento viene ricavato dalla interrogazione dell'utente in maniera trasparente.
 - Word2vec search engine, integra un modello di ranking che sfrutta un modello di word2vec ricavato con CBOW. 
 
-FUNZIONAMENTO: 
+DATA: 
+
+Il corpus su cui facciamo le ricerche è preso da un dataset di kaggle che contiene al suo interno l'insieme di libri presenti nella categoria documenti di amazon. Il dataset fornisce i seguenti dati per ogni libro: 
+- Autore
+- Titolo
+- Genere
+- Recensioni
+
+FUNZIONAMENTO:
+
 Il file searchingWhoosh implementa il sistema di ricerca che permette di eseguire ricerce nei vari campi dello schema definito. 
 Tipologie di ricerca: 
 - Titolo
@@ -28,7 +37,8 @@ Abbiamo fornito la possibilità di scegliere tra i vari modelli di ranking, tra 
 - BM25F + Sentiment analysis
 - BM25F + word2vec similarity
 
-MODULI
+MODULI:
+
 - progGI.py: file che analizza il dataset csv e genera il pool di file. 
 - indexingProject.py: file per la generazione dell inverted index con whoosh, dove viene definito lo schema e valutata inoltre la sentiment dei singoli file. 
 - SearchingWhoosh: file che gestisce il sistema di ricerca attraverso le scelte presentate con una semplice interfaccia
@@ -36,4 +46,8 @@ MODULI
 - word2vec/generate_index_w2v.py: file per la generazione di un secondo inverted index, che per questioni implementative gestisce solo le query con word2vec
 - word2vec/queryw2v.py: file per la gestione delle interrogazioni sull'index che gestisce il word2vec.
 
-
+TECNOLOGIE UTILIZZATE:
+- Whoosh 
+- RoBERTa model for sentiment analysis
+- gensim per CBOW model
+- Dataset from Kaggle
