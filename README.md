@@ -8,6 +8,8 @@ Abbiamo realizzato 4 versioni di serch-engine che offrono funzioni diverse e uti
 - Automatic sentiment search engine, integra un modello di ranking che sfrutta il valore di sentiment dei file; si chiama "Auto sentiment" perché in questo modello il sentimento viene ricavato dalla interrogazione dell'utente in maniera trasparente.
 - Word2vec search engine, integra un modello di ranking che sfrutta un modello di word2vec ricavato con CBOW. 
 
+Per il funzionamento è necessario modificare sia in SearchingWhoosh.py la variabile "index_directory" con il percorso in cui avete l'inverted index, analogamente in word2vec/queryw2v.py modificare la variabile "directory" con il percorso in cui avete l'inverted index relativo al word2vec. 
+
 DATA: 
 
 Il corpus su cui facciamo le ricerche è preso da un dataset di kaggle che contiene al suo interno l'insieme di libri presenti nella categoria documenti di amazon. Il dataset fornisce i seguenti dati per ogni libro: 
