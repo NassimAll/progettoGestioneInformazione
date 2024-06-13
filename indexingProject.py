@@ -7,6 +7,7 @@ from transformers import AutoTokenizer
 from scipy.special import softmax
 
 dir_path = r'C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\FILES'
+index_dir = r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index"
 
 MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -17,7 +18,7 @@ max_length = 512
 # Defines the way the file is written
 schema = Schema(title=TEXT(stored=True, analyzer=None), path=ID(stored=True, analyzer=None), author=TEXT(analyzer=None), genre=TEXT(analyzer=None), review=TEXT(analyzer=analysis.StemmingAnalyzer()), positive=NUMERIC(float, stored=True), neutral=NUMERIC(float, stored=True), negative=NUMERIC(float, stored=True))
 
-ix = create_in(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index", schema)
+ix = create_in(index_dir, schema)
 writer = ix.writer()
 
 # list to store files
@@ -53,10 +54,6 @@ for file in os.listdir(dir_path):
         writer.add_document(title=title, path=os.path.join(dir_path, file), author=aut, genre=genre, review=review, positive=scores[2], neutral=scores[1], negative=scores[0])
         if i >= limit:  break
 
-        #max_score = max(tmp_dict.values())
-        #max_type = list(tmp_dict.keys())[list(tmp_dict.values()).index(max_score)]
-
-        #print(f'Sentiment: {max_type}, {max_score}')
 
         
 
