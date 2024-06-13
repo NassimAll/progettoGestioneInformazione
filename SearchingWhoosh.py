@@ -15,8 +15,9 @@ MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 Roberta_model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 max_length = 512
-#ix = open_dir(r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index")
-ix = open_dir("/Users/nax/Desktop/index")
+#define index dir path
+index_directory = r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index"
+ix = open_dir(index_directory)
 #Variabile per rselezionare il sentimento
 searchSentiment = ""
 
