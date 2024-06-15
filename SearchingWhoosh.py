@@ -152,6 +152,9 @@ if __name__ == "__main__":
             if choice == 0:
                 break
             elif choice == 1:   #Search the title
+                if Modelchoice == 5:    
+                    print("Not implemented auto sentiment with this field")
+                    break
                 parser = QueryParser(fieldname="title", schema=ix.schema)
                 searchstring = input("Insert the title of the book \n")
                 if Modelchoice == 4:    #Check if want to search a sentiment
@@ -159,6 +162,9 @@ if __name__ == "__main__":
                         SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
                 query = parser.parse(searchstring)
             elif choice == 2:   #Search the author
+                if Modelchoice == 5:    
+                    print("Not implemented auto sentiment with this field")
+                    break
                 parser = QueryParser(fieldname="author", schema=ix.schema)
                 searchstring = input("Insert the author of the book \n")
                 if Modelchoice == 4:    #Check if want to search a sentiment
@@ -166,6 +172,9 @@ if __name__ == "__main__":
                         SentimentBM25F.setSentiment(SentimentBM25F, searchSentiment)
                 query = parser.parse(searchstring)
             elif choice == 3:   #Search the genre
+                if Modelchoice == 5:    
+                    print("Not implemented auto sentiment with this field")
+                    break
                 parser = QueryParser(fieldname="genre", schema=ix.schema, group=qparser.OrGroup)
                 searchstring = input("Insert the genre of the book \n")
                 if Modelchoice == 4:    #Check if want to search a sentiment
