@@ -16,7 +16,8 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL)
 Roberta_model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 max_length = 512
 #define index dir path
-index_directory = r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index"
+#r"C:\Users\sebyl\Desktop\Uni\GestioneInfoProg\progettoGestioneInformazione\index"
+index_directory = "/Users/nax/Desktop/index"
 ix = open_dir(index_directory)
 #Variabile per rselezionare il sentimento
 searchSentiment = ""
@@ -92,6 +93,12 @@ def sentimentChoice():
         
         print("You insert the wrong number, retry")
 
+def print_preview(path):
+    with open(path, 'r') as f:
+        lines = f.readlines()
+        print(lines[0::5])
+        print("...\n\n")
+
 #Stampa dei risultati 
 def showResult(res, sent):
      for hit in res:
@@ -102,7 +109,8 @@ def showResult(res, sent):
             print("negative - Sentiment value: ", hit["negative"])
         print("Score: ", hit.score)
         print("Rank: ", hit.rank)
-        print("Document number: ", hit.docnum)
+        print("Document preview: ")
+        print_preview(hit["path"])
         print("\n")
 
 #Stampa menu di ricerca
